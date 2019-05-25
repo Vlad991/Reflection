@@ -1,6 +1,5 @@
 package com.infopulse;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.*;
@@ -28,6 +27,39 @@ class A {
 
     public void setA(Integer a) {
         this.a = a;
+    }
+}
+
+class CustomInvocationHandler implements InvocationHandler{
+    private A original;
+
+    public CustomInvocationHandler(A original) {
+        this.original = original;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        System.out.println("yes");
+
+        return method.invoke(original, args);
+    }
+}
+
+class FactoryA {
+    private A pa;
+
+    public FactoryA() {
+        Class classA = A.class;
+        MyAnnotation annotation = (MyAnnotation)classA.getAnnotation(MyAnnotation.class);
+        A original = new A();
+        CustomInvocationHandler invovocationHandler = new CustomInvocationHandler(original);
+        if (annotation != null) {
+            pa = (A)Proxy.newProxyInstance(null, classA.getInterfaces(), invovocationHandler);
+        }
+    }
+
+    public A getA() {
+
     }
 }
 
@@ -63,8 +95,8 @@ public class Main {
         A pa1 = (A) constructor.newInstance(new Integer(900));
         System.out.println(pa1.getA());
 
-        MyAnnotation annotation = (MyAnnotation)c3.getAnnotation(MyAnnotation.class);
+        MyAnnotation annotation = (MyAnnotation) c3.getAnnotation(MyAnnotation.class);
         System.out.println(annotation.value());
-        
+
     }
 }

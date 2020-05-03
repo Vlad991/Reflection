@@ -13,7 +13,7 @@ public class AnnotationsTutorial {
 
 //@MyAnn(value = "some", i = 5)
 //@MyAnn("some")
-@BugReport(reportedBy = "one", ref = @Reference)
+//@BugReport(reportedBy = "one", ref = @Reference)
 class MyClass {
     @Deprecated
     int i;
@@ -62,7 +62,7 @@ class MyClass2 extends MyClass {
 
     BugReport.Status status() default BugReport.Status.UCONFIRMED;
 
-    Reference ref() default @Reference();
+//    Reference ref() default @Reference();
 
     String[] reportedBy();
 
